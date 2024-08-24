@@ -7,23 +7,23 @@
     <script>
         window.onload = function() {
             const regexBinary = /^[01]+$/;
-            let utf8Encoder = new TextEncoder();
-            let utf8Decoder = new TextDecoder();
+            const utf8Encoder = new TextEncoder();
+            const utf8Decoder = new TextDecoder();
 
-            function updateInputValue(e) {
-                let encoded = utf8Encoder.encode(e.target.value);
+            function textAreaUtf8OnInput(e) {
+                const encoded = utf8Encoder.encode(e.target.value);
                 let result = ''
                 for (let b of encoded) {
                     result += b.toString(2).padStart(8, "0");
                 }
-                textAreaOutput.value = result;
+                textAreaBinary.value = result;
             }
 
-            function updateOutputValue(e) {
+            function textAreaBinaryOnInput(e) {
                 const s = e.target.value;
                 const l = s.length;
                 if (l % 8 || !regexBinary.test(s)) {
-                    textAreaInput.value = "";
+                    textAreaUtf8.value = "";
                 } else {
                     const octets = l / 8;
                     let ba = new Uint8Array(octets);
@@ -31,18 +31,18 @@
                         ba[i] = parseInt(s.slice(i * 8, i * 8 + 8), 2);
                     }
                     try {
-                        textAreaInput.value = utf8Decoder.decode(ba);
+                        textAreaUtf8.value = utf8Decoder.decode(ba);
                     } catch (error) {
-                        textAreaInput.value = "";
+                        textAreaUtf8.value = "";
                     }
                 }
             }
 
-            const textAreaInput = document.getElementById("textAreaInput");
-            const textAreaOutput = document.getElementById("textAreaOutput");
+            const textAreaUtf8 = document.getElementById("textAreaUtf8");
+            const textAreaBinary = document.getElementById("textAreaBinary");
 
-            textAreaInput.addEventListener("input", updateInputValue);
-            textAreaOutput.addEventListener("input", updateOutputValue);
+            textAreaUtf8.addEventListener("input", textAreaUtf8OnInput);
+            textAreaBinary.addEventListener("input", textAreaBinaryOnInput);
         };
     </script>
     <style>
@@ -53,10 +53,16 @@
     </style>
 </head>
 <body>
-    <div><label for="textAreaInput">UTF-8</label></div>
-    <textarea id="textAreaInput" rows="4" cols="40" autofocus></textarea>
-    <div><label for="textAreaOutput">Binary</label></div>
-    <textarea id="textAreaOutput" rows="16" cols="40"></textarea>
-    <div><a href="https://github.com/vladimirgamalyan/convertick">GitHub</a></div>
+    <div>
+        <label for="textAreaUtf8">UTF-8</label>
+    </div>
+    <textarea id="textAreaUtf8" rows="4" cols="40" autofocus></textarea>
+    <div>
+        <label for="textAreaBinary">Binary</label>
+    </div>
+    <textarea id="textAreaBinary" rows="16" cols="40"></textarea>
+    <div>
+        <a href="https://github.com/vladimirgamalyan/convertick">GitHub</a>
+    </div>
 </body>
 </html>
